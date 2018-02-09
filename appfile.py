@@ -15,7 +15,7 @@ app.debug = True
 app.use_reloader = True
 
 app.config['SECRET_KEY'] = 'hardtoguessstring'
-app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://localhost/weatherdb" # TODO: May need to change this, Windows users. Everyone will need to have created a db with exactly this name.
+app.config["SQLALCHEMY_DATABASE_URI"] = "postgresql://AbbySnyder@localhost/weatherdb" # TODO: May need to change this, Windows users. Everyone will need to have created a db with exactly this name.
 app.config['SQLALCHEMY_COMMIT_ON_TEARDOWN'] = True
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -47,18 +47,20 @@ def index():
 def enter_info():
     form = CityForm()
     if form.validate_on_submit():
-        return "hello world" # replace this with code to save the form data in the database
+        # replace this with code to save the form data in the database
         ## COMMENTS TO TRANSLATE:
         # Get the form data in variables
-
+        name = form.name.data
+        temp = form.temp.data
         # Create a City object with the correct data populated
-
+        city = City(name=name, temp_fah=temp)
         # Add the city object to the db.session
-
+        db.session.add(city)
         # Commit the db session
-
+        db.session.commit()
         # return a redirect to the URL for this function to add another...
         # OR, if you prefer, you could return a redirect to the function that renders the page showing all the cities and temperatures!
+        return redirect(url_for('enter_info'))
     return render_template('formshow.html',form=form)
 
 @app.route('/cities_and_temps')
